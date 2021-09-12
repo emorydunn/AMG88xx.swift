@@ -11,7 +11,7 @@ import AMG88xx
 
 let interface = SwiftyGPIO.hardwareI2Cs(for: .RaspberryPiPlusZero)![1]
 
-let sensor = AMG88(interface: interface)
+let sensor = AMG88(interface)
 
 let temp = sensor.readThermistor()
 print("Thermistor Temp:", temp)

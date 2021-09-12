@@ -10,7 +10,7 @@ public class AMG88 {
     let pixelTempConversion: Float = 0.25
     let thermistorConversion: Float = 0.0625
     
-    public init(interface: I2CInterface, address: Int = 0x69) {
+    public init(_ interface: I2CInterface, address: Int = 0x69) {
         
         self.interface = interface
         self.address = address
@@ -87,50 +87,40 @@ public class AMG88 {
         interface.writeByte(address, command: Registers.intc, value: 0)
     }
     
-    // MARK: Read
+    // MARK: Average Mode
+    public func enableMovingAverage() {
+        interface.writeByte(address, command: Registers.ave, value: 1)
+    }
+    
+    public func disableMovingAverage() {
+        interface.writeByte(address, command: Registers.ave, value: 0)
+    }
+    
+    // MARK: Temperatures
     
     /// Read the temperature value from the internal thermistor.
     /// - Returns: The temperature in Celsius.
     public func readThermistor() -> Float {
-        return readTemperature(low: Registers.tthl, high: Registers.tthh) * thermistorConversion
+        let raw = interface.readWord(address, command: Registers.tthl)
+        return raw.fromSignedMag12() * thermistorConversion
     }
     
     /// Read temperature values from the pixel registers.
     /// - Returns: An array of temperature values in Celsius.
     public func readPixels() -> [Float] {
         return stride(from: 0, to: arraySize * 2, by: 2).map { offset in
-            let low = Registers.pixelOffset + UInt8(offset)
-            let high = low + 1
-            
-            return readTemperature(low: low, high: high) * pixelTempConversion
+            readPixel(at: offset)
         }
     }
     
-    // MARK: Support
-    /// Convert a 12-bit signed magnitude value to a floating point number.
-    ///
-    /// - Parameter value: The 12-bit signed magnitude value.
-    /// - Returns: The converted floating point number.
-    func signedMag12ToFloat(_ value: UInt16) -> Float {
-        let abs = value & 0x7FF
-        return (value & 0x800) != 0 ? 0 - Float(abs) : Float(abs)
-    }
-    
-    /// Read a pair of registers and return the temperature.
-    ///
-    /// The two registers should form a 12-bit signed magnitude value.
-    /// - Parameters:
-    ///   - low: The lower register.
-    ///   - high: The higher register.
-    /// - Returns: The converted floating point number. 
-    func readTemperature(low: UInt8, high: UInt8) -> Float {
-        // Read the first register
-        let raw1 = UInt16(interface.readByte(address, command: low))
+    /// Read the temperature at the specified _register_ offset.
+    /// - Parameter offset: The register offset to read from.
+    /// - Returns: The temperature value for the pixel.
+    func readPixel(at offset: Int) -> Float {
+        let low = Registers.pixelOffset + UInt8(offset)
+        let raw = interface.readWord(address, command: low)
         
-        // Read the second register and shift
-        let raw2 = UInt16(interface.readByte(address, command: high)) << 8
-        
-        return (raw2 | raw1).signedMag12ToFloat()
+        return raw.fromTwosCompliment() * pixelTempConversion
     }
     
 }
