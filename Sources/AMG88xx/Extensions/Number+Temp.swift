@@ -1,5 +1,5 @@
 //
-//  UInt16+Temp.swift
+//  Number+Temp.swift
 //  
 //
 //  Created by Emory Dunn on 9/11/21.
@@ -21,11 +21,25 @@ public extension UInt16 {
     /// - Parameter bits: The number of bits in the binary representation.
     /// - Returns: A floating point number representing the decimal value.
     func fromTwosCompliment(bits: Int = 12) -> Float {
+        // Shift to check the sign bit
         if self >> 11 == 1 {
             // Convert to a signed int, then a float
-            return Float(Int(self) - 1 << 12)
+            return Float(Int(self) - 1 << bits)
         } else {
             return Float(self)
+        }
+    }
+}
+
+extension Float {
+    /// Convert to two's compliment representation.
+    /// - Parameter bits: The number of bits in the binary representation.
+    /// - Returns: An unsigned integer of the two's compliment value.
+    func twosCompliment(bits: Int = 12) -> UInt16 {
+        if self > 0 {
+            return UInt16(self)
+        } else {
+            return UInt16(Int(self) + 1 << bits)
         }
     }
 }

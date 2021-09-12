@@ -39,6 +39,6 @@ pixels.logPagedData()
 
 ## Acknowledgments
 
-Much of this library is a port from the [Adafruit AMG88 library][adafruit] written by Dean Miller.  
+Much of this library is inspired by the [Adafruit AMG88 library][adafruit] written by Dean Miller.  
 
 [adafruit]: https://github.com/adafruit/Adafruit_AMG88xx

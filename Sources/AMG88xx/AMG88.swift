@@ -38,28 +38,16 @@ public class AMG88 {
     // MARK: Interrupt Mode
     public func setInterruptLevels(high: Float, low: Float, hysteresis: Float = 0.95) {
         // Set the high level
-        let highConv = UInt8(high / pixelTempConversion)
-        let intHL = highConv & 0xFF
-        let intHH = (highConv & 0xF) >> 4
-        
-        interface.writeByte(address, command: Registers.inthl, value: intHL)
-        interface.writeByte(address, command: Registers.inthh, value: intHH)
+        let highConv = (high / pixelTempConversion).twosCompliment()
+        interface.writeWord(address, command: Registers.inthl, value: highConv)
         
         // Set the low level
-        let lowConv = UInt8(low / pixelTempConversion)
-        let intLL = lowConv & 0xFF
-        let intLH = (lowConv & 0xF) >> 4
-        
-        interface.writeByte(address, command: Registers.intll, value: intLL)
-        interface.writeByte(address, command: Registers.intlh, value: intLH)
-        
+        let lowConv = (low / pixelTempConversion).twosCompliment()
+        interface.writeWord(address, command: Registers.intll, value: lowConv)
+
         // Set the hysteresis level
-        let hysConv = UInt8(low / pixelTempConversion)
-        let hysLL = hysConv & 0xFF
-        let hysLH = (hysConv & 0xF) >> 4
-        
-        interface.writeByte(address, command: Registers.ihysl, value: hysLL)
-        interface.writeByte(address, command: Registers.ihysh, value: hysLH)
+        let hysConv = (low / pixelTempConversion).twosCompliment()
+        interface.writeWord(address, command: Registers.ihysl, value: hysConv)
     }
     
     /// Determine which pixels triggered an interrupt.

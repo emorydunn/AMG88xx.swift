@@ -13,6 +13,11 @@ final class AMG88xxTests: XCTestCase {
         XCTAssertEqual(UInt16(0b1111_1001_1100).fromTwosCompliment(), -100) // -25ºC
     }
     
+    func testFloatToCompliment() {
+        XCTAssertEqual(UInt16(0b0000_0110_0100), Float(100).twosCompliment()) // +25ºC
+        XCTAssertEqual(UInt16(0b1111_1001_1100), Float(-100).twosCompliment()) // -25ºC
+    }
+    
     func testThermistor() {
         let sensor = AMG88(MockAMG())
         
