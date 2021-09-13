@@ -13,12 +13,12 @@ Firstly, you'll need to obtain an instance of `I2CInterface` from `SwiftyGPIO` a
 
 ```swift
 import SwiftyGPIO
-import AMG88
+import AMG88xx
 
 let i2cs = SwiftyGPIO.hardwareI2Cs(for: .RaspberryPiPlusZero)!
-let i2c = i2cs[0]
+let i2c = i2cs[1]
 
-let sensor = AMG88(interface)
+let sensor = AMG88(i2c)
 ```
 
 Once you have a sensor object you can read temperature data from the thermopile:

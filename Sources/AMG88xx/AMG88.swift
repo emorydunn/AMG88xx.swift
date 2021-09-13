@@ -3,8 +3,8 @@ import SwiftyGPIO
 
 public class AMG88 {
 
-    var interface: I2CInterface
-    var address: Int
+    let interface: I2CInterface
+    let address: Int
     
     let arraySize: Int = 64
     let pixelTempConversion: Float = 0.25
@@ -36,6 +36,14 @@ public class AMG88 {
     
     
     // MARK: Interrupt Mode
+    /// Set high and low limits for the interrupt pin.
+    ///
+    /// When any pixel's temperature falls outside the limits the interrupt pin and interrupt pixel table are set.
+    ///
+    /// - Parameters:
+    ///   - high: The high limit in Celsius.
+    ///   - low: The low limit in Celsius.
+    ///   - hysteresis: The hysteresis value.
     public func setInterruptLevels(high: Float, low: Float, hysteresis: Float = 0.95) {
         // Set the high level
         let highConv = (high / pixelTempConversion).twosCompliment()
@@ -63,23 +71,28 @@ public class AMG88 {
         }
     }
     
+    /// Clear the interrupt values.
     public func clearInterrupt() {
         interface.writeByte(address, command: Registers.reset, value: SWReset.flagReset)
     }
     
+    /// Enable the interrupt pin.
     public func enableInterrupt() {
         interface.writeByte(address, command: Registers.intc, value: 1)
     }
     
+    /// Disable the interrupt pin.
     public func disableInterrupt() {
         interface.writeByte(address, command: Registers.intc, value: 0)
     }
     
     // MARK: Average Mode
+    /// Enable moving average mode.
     public func enableMovingAverage() {
         interface.writeByte(address, command: Registers.ave, value: 1)
     }
     
+    /// Disable moving average mode.
     public func disableMovingAverage() {
         interface.writeByte(address, command: Registers.ave, value: 0)
     }
