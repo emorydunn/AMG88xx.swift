@@ -41,17 +41,17 @@ class MockAMG: I2CInterface {
     }
     
     func readWord(_ address: Int, command: UInt8) -> UInt16 {
-        let low = UInt16(register[Int(command)])
-        let high = UInt16(register[Int(command + 1)]) << 8
+        let low = UInt16(register[command])
+        let high = UInt16(register[command + 1]) << 8
         return (high | low)
     }
     
     func readData(_ address: Int, command: UInt8) -> [UInt8] {
-        return [0]
+        fatalError("No-op in mock interface")
     }
     
     func readI2CData(_ address: Int, command: UInt8) -> [UInt8] {
-        return [0]
+        fatalError("No-op in mock interface")
     }
     
     func writeQuick(_ address: Int) {
@@ -59,24 +59,37 @@ class MockAMG: I2CInterface {
     }
     
     func writeByte(_ address: Int, value: UInt8) {
-        
+        fatalError("No-op in mock interface")
     }
     
     func writeByte(_ address: Int, command: UInt8, value: UInt8) {
-        
+        register[command] = value
     }
     
     func writeWord(_ address: Int, command: UInt8, value: UInt16) {
-        
+        register[command] = value.bytes.0
+        register[command + 1] = value.bytes.1
     }
     
     func writeData(_ address: Int, command: UInt8, values: [UInt8]) {
-        
+        fatalError("No-op in mock interface")
     }
     
     func writeI2CData(_ address: Int, command: UInt8, values: [UInt8]) {
-        
+        fatalError("No-op in mock interface")
     }
     
     
+}
+
+extension Array {
+    subscript(index: UInt8) -> Element {
+        get {
+            self[Int(index)]
+        }
+        
+        set {
+            self[Int(index)] = newValue
+        }
+    }
 }
