@@ -1,4 +1,4 @@
-# AMG88xx
+# AMG88
 
 A Swift library for the Panasonic AMG88 family of sensors. 
 
@@ -13,7 +13,7 @@ Firstly, you'll need to obtain an instance of `I2CInterface` from `SwiftyGPIO` a
 
 ```swift
 import SwiftyGPIO
-import AMG88xx
+import AMG88
 
 let i2cs = SwiftyGPIO.hardwareI2Cs(for: .RaspberryPiPlusZero)!
 let i2c = i2cs[1]

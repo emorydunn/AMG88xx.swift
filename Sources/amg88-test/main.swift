@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftyGPIO
-import AMG88xx
+import AMG88
 
 let averageMode = CommandLine.arguments.contains("--avg")
 let loopMode = CommandLine.arguments.contains("--loop")

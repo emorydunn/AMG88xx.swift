@@ -1,5 +1,5 @@
 import XCTest
-@testable import AMG88xx
+@testable import AMG88
 import SwiftyGPIO
 
 final class AMG88xxTests: XCTestCase {
