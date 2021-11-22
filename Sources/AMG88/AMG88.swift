@@ -1,7 +1,7 @@
 import Foundation
 import SwiftyGPIO
 
-open class AMG88 {
+public class AMG88: AMG88Protocol {
 
     public let interface: I2CInterface
     public let address: Int
@@ -101,14 +101,14 @@ open class AMG88 {
     
     /// Read the temperature value from the internal thermistor.
     /// - Returns: The temperature in Celsius.
-    open func readThermistor() -> Float {
+    public func readThermistor() -> Float {
         let raw = interface.readWord(address, command: Registers.tthl)
         return raw.fromSignedMag12() * thermistorConversion
     }
     
     /// Read temperature values from the pixel registers.
     /// - Returns: An array of temperature values in Celsius.
-    open func readPixels() -> [Float] {
+    public func readPixels() -> [Float] {
         return stride(from: 0, to: arraySize * 2, by: 2).map { offset in
             readPixel(at: offset)
         }
@@ -117,7 +117,7 @@ open class AMG88 {
     /// Read the temperature at the specified _register_ offset.
     /// - Parameter offset: The register offset to read from.
     /// - Returns: The temperature value for the pixel.
-    open func readPixel(at offset: Int) -> Float {
+    public func readPixel(at offset: Int) -> Float {
         let low = Registers.pixelOffset + UInt8(offset)
         let raw = interface.readWord(address, command: low)
         
