@@ -76,18 +76,32 @@ public enum SWReset: UInt8 {
 }
 
 public enum FrameRate: UInt8 {
-    case fps10 = 0x00
-    case fps1 = 0x01
+    case fps10 = 0
+    case fps1 = 1
 }
 
+@available(*, deprecated)
 public enum InterruptEnable: UInt8 {
-    case enabled = 0x01
-    case disabled = 0x00
+    case enabled = 1
+    case disabled = 0
+    
+    public init?(shiftedValue: UInt8) {
+        self.init(rawValue: shiftedValue >> 0)
+    }
+    
+    var shiftedValue: UInt8 { rawValue << 0 }
 }
 
+@available(*, deprecated)
 public enum InterruptMode: UInt8 {
-    case difference = 0x00
-    case absolute = 0x01
+    case difference = 0
+    case absolute = 1
+    
+    public init?(shiftedValue: UInt8) {
+        self.init(rawValue: shiftedValue >> 1)
+    }
+    
+    var shiftedValue: UInt8 { rawValue << 1 }
 }
 
 extension I2CInterface {

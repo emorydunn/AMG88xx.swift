@@ -112,33 +112,40 @@ public class AMG88: AMG88Protocol {
     
     /// Enable the interrupt pin.
     public func enableInterrupt() {
-        interface.writeByte(address, command: Registers.interruptControl, value: 1)
+        var currentValue = interface.readByte(address, command: Registers.interruptControl)
+        
+        currentValue |= 1 << 0
+        
+        interface.writeByte(address, command: Registers.interruptControl, value: currentValue)
     }
     
     /// Disable the interrupt pin.
     public func disableInterrupt() {
-        interface.writeByte(address, command: Registers.interruptControl, value: 0)
+        var currentValue = interface.readByte(address, command: Registers.interruptControl)
+        
+        currentValue &= ~(1 << 0)
+        
+        interface.writeByte(address, command: Registers.interruptControl, value: currentValue)
     }
     
-    /// The interrupt's state.
-    public var interruptEnabled: InterruptEnable {
-        get {
-            InterruptEnable(rawValue: interface.readByte(address, command: Registers.interruptControl))!
-        }
-        set {
-            interface.writeByte(address, command: Registers.interruptControl, value: newValue.rawValue)
-        }
+    /// Set the interrupt to Difference Interrupt Mode
+    public func setInterruptModeDifference() {
+        var currentValue = interface.readByte(address, command: Registers.interruptControl)
+        
+        currentValue &= ~(1 << 0)
+        
+        interface.writeByte(address, command: Registers.interruptControl, value: currentValue)
     }
     
-    /// The interrupt's mode.
-    public var interruptMode: InterruptMode {
-        get {
-            InterruptMode(rawValue: interface.readByte(address, command: Registers.interruptControl) >> 1)!
-        }
-        set {
-            interface.writeByte(address, command: Registers.interruptControl, value: newValue.rawValue << 1)
-        }
+    /// Set the interrupt to Absolute Value Interrupt Mode
+    public func setInterruptModeAbsolute() {
+        var currentValue = interface.readByte(address, command: Registers.interruptControl)
+        
+        currentValue |= 1 << 1
+        
+        interface.writeByte(address, command: Registers.interruptControl, value: currentValue)
     }
+    
     
     // MARK: Average Mode
     /// Enable moving average mode.
