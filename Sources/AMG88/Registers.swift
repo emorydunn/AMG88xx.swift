@@ -81,8 +81,8 @@ public enum FrameRate: UInt8 {
 }
 
 public enum InterruptEnable: UInt8 {
-    case enabled = 0x00
-    case disabled = 0x01
+    case enabled = 0x01
+    case disabled = 0x00
 }
 
 public enum InterruptMode: UInt8 {
