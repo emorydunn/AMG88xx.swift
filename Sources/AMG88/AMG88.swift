@@ -44,6 +44,7 @@ public class AMG88: AMG88Protocol {
     ///   - high: The high limit in Celsius.
     ///   - low: The low limit in Celsius.
     ///   - hysteresis: The hysteresis value.
+    @available(*, deprecated, message: "Use the individual properties.")
     public func setInterruptLevels(high: Float, low: Float, hysteresis: Float = 0.95) {
         // Set the high level
         let highConv = (high / pixelTempConversion).twosCompliment()
@@ -56,6 +57,39 @@ public class AMG88: AMG88Protocol {
         // Set the hysteresis level
         let hysConv = (low / pixelTempConversion).twosCompliment()
         interface.writeWord(address, command: Registers.ihysl, value: hysConv)
+    }
+    
+    public var lowInterrupt: Float {
+        get {
+            let value = interface.readWord(address, command: Registers.inthl)
+            return value.fromTwosCompliment() * pixelTempConversion
+        }
+        set {
+            let value = (newValue / pixelTempConversion).twosCompliment()
+            interface.writeWord(address, command: Registers.inthl, value: value)
+        }
+    }
+    
+    public var highInterrupt: Float {
+        get {
+            let value = interface.readWord(address, command: Registers.intll)
+            return value.fromTwosCompliment() * pixelTempConversion
+        }
+        set {
+            let value = (newValue / pixelTempConversion).twosCompliment()
+            interface.writeWord(address, command: Registers.intll, value: value)
+        }
+    }
+    
+    public var hysteresis: Float {
+        get {
+            let value = interface.readWord(address, command: Registers.ihysl)
+            return value.fromTwosCompliment() * pixelTempConversion
+        }
+        set {
+            let value = (newValue / pixelTempConversion).twosCompliment()
+            interface.writeWord(address, command: Registers.ihysl, value: value)
+        }
     }
     
     /// Determine which pixels triggered an interrupt.
@@ -84,6 +118,26 @@ public class AMG88: AMG88Protocol {
     /// Disable the interrupt pin.
     public func disableInterrupt() {
         interface.writeByte(address, command: Registers.intc, value: 0)
+    }
+    
+    /// The interrupt's state.
+    public var interruptEnabled: InterruptEnable {
+        get {
+            InterruptEnable(rawValue: interface.readByte(address, command: Registers.intc))!
+        }
+        set {
+            interface.writeByte(address, command: Registers.intc, value: newValue.rawValue)
+        }
+    }
+    
+    /// The interrupt's mode.
+    public var interruptMode: InterruptMode {
+        get {
+            InterruptMode(rawValue: interface.readByte(address, command: Registers.intc) >> 1)!
+        }
+        set {
+            interface.writeByte(address, command: Registers.intc, value: newValue.rawValue << 1)
+        }
     }
     
     // MARK: Average Mode
