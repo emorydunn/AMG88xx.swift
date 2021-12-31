@@ -20,7 +20,7 @@ public class AMG88: AMG88Protocol {
         }
         
         // Enter normal mode
-        interface.writeByte(address, command: Registers.pctl, value: PowerMode.normal)
+        interface.writeByte(address, command: Registers.powerControl, value: PowerMode.normal)
         
         // Software Reset
         interface.writeByte(address, command: Registers.reset, value: SWReset.initialReset)
@@ -28,7 +28,7 @@ public class AMG88: AMG88Protocol {
         disableInterrupt()
         
         // Set to 10 FPS
-        interface.writeByte(address, command: Registers.fpsc, value: FrameRate.fps10)
+        interface.writeByte(address, command: Registers.frameRate, value: FrameRate.fps10)
         
         sleep(1)
     
@@ -48,47 +48,47 @@ public class AMG88: AMG88Protocol {
     public func setInterruptLevels(high: Float, low: Float, hysteresis: Float = 0.95) {
         // Set the high level
         let highConv = (high / pixelTempConversion).twosCompliment()
-        interface.writeWord(address, command: Registers.inthl, value: highConv)
+        interface.writeWord(address, command: Registers.interruptHighLevelLow, value: highConv)
         
         // Set the low level
         let lowConv = (low / pixelTempConversion).twosCompliment()
-        interface.writeWord(address, command: Registers.intll, value: lowConv)
+        interface.writeWord(address, command: Registers.interruptLowLevelLow, value: lowConv)
 
         // Set the hysteresis level
         let hysConv = (low / pixelTempConversion).twosCompliment()
-        interface.writeWord(address, command: Registers.ihysl, value: hysConv)
+        interface.writeWord(address, command: Registers.interruptHysteresisLow, value: hysConv)
     }
     
     public var lowInterrupt: Float {
         get {
-            let value = interface.readWord(address, command: Registers.inthl)
+            let value = interface.readWord(address, command: Registers.interruptHighLevelLow)
             return value.fromTwosCompliment() * pixelTempConversion
         }
         set {
             let value = (newValue / pixelTempConversion).twosCompliment()
-            interface.writeWord(address, command: Registers.inthl, value: value)
+            interface.writeWord(address, command: Registers.interruptHighLevelLow, value: value)
         }
     }
     
     public var highInterrupt: Float {
         get {
-            let value = interface.readWord(address, command: Registers.intll)
+            let value = interface.readWord(address, command: Registers.interruptLowLevelLow)
             return value.fromTwosCompliment() * pixelTempConversion
         }
         set {
             let value = (newValue / pixelTempConversion).twosCompliment()
-            interface.writeWord(address, command: Registers.intll, value: value)
+            interface.writeWord(address, command: Registers.interruptLowLevelLow, value: value)
         }
     }
     
     public var hysteresis: Float {
         get {
-            let value = interface.readWord(address, command: Registers.ihysl)
+            let value = interface.readWord(address, command: Registers.interruptHysteresisLow)
             return value.fromTwosCompliment() * pixelTempConversion
         }
         set {
             let value = (newValue / pixelTempConversion).twosCompliment()
-            interface.writeWord(address, command: Registers.ihysl, value: value)
+            interface.writeWord(address, command: Registers.interruptHysteresisLow, value: value)
         }
     }
     
@@ -99,7 +99,7 @@ public class AMG88: AMG88Protocol {
     /// - Returns: A two-dimensional array indicating which pixels triggered the interrupt signal.
     public func getInterrupts() -> [[Bool]] {
         stride(from: 0, to: 7, by: 1).reversed().map { offset in
-            interface.readI2CData(address, command: Registers.intOffset + UInt8(offset)).map {
+            interface.readI2CData(address, command: Registers.interruptTableOffset + UInt8(offset)).map {
                 Bool($0 == 1)
             }
         }
@@ -112,43 +112,43 @@ public class AMG88: AMG88Protocol {
     
     /// Enable the interrupt pin.
     public func enableInterrupt() {
-        interface.writeByte(address, command: Registers.intc, value: 1)
+        interface.writeByte(address, command: Registers.interruptControl, value: 1)
     }
     
     /// Disable the interrupt pin.
     public func disableInterrupt() {
-        interface.writeByte(address, command: Registers.intc, value: 0)
+        interface.writeByte(address, command: Registers.interruptControl, value: 0)
     }
     
     /// The interrupt's state.
     public var interruptEnabled: InterruptEnable {
         get {
-            InterruptEnable(rawValue: interface.readByte(address, command: Registers.intc))!
+            InterruptEnable(rawValue: interface.readByte(address, command: Registers.interruptControl))!
         }
         set {
-            interface.writeByte(address, command: Registers.intc, value: newValue.rawValue)
+            interface.writeByte(address, command: Registers.interruptControl, value: newValue.rawValue)
         }
     }
     
     /// The interrupt's mode.
     public var interruptMode: InterruptMode {
         get {
-            InterruptMode(rawValue: interface.readByte(address, command: Registers.intc) >> 1)!
+            InterruptMode(rawValue: interface.readByte(address, command: Registers.interruptControl) >> 1)!
         }
         set {
-            interface.writeByte(address, command: Registers.intc, value: newValue.rawValue << 1)
+            interface.writeByte(address, command: Registers.interruptControl, value: newValue.rawValue << 1)
         }
     }
     
     // MARK: Average Mode
     /// Enable moving average mode.
     public func enableMovingAverage() {
-        interface.writeByte(address, command: Registers.ave, value: 1)
+        interface.writeByte(address, command: Registers.average, value: 1)
     }
     
     /// Disable moving average mode.
     public func disableMovingAverage() {
-        interface.writeByte(address, command: Registers.ave, value: 0)
+        interface.writeByte(address, command: Registers.average, value: 0)
     }
     
     // MARK: Temperatures
@@ -156,7 +156,7 @@ public class AMG88: AMG88Protocol {
     /// Read the temperature value from the internal thermistor.
     /// - Returns: The temperature in Celsius.
     public func readThermistor() -> Float {
-        let raw = interface.readWord(address, command: Registers.tthl)
+        let raw = interface.readWord(address, command: Registers.ThermistorOutputLow)
         return raw.fromSignedMag12() * thermistorConversion
     }
     

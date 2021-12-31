@@ -10,55 +10,54 @@ import SwiftyGPIO
 
 enum Registers {
     /// Set operating mode
-    static let pctl: UInt8 = 0x00
+    static let powerControl: UInt8 = 0x00
     
     /// Software Reset
     static let reset: UInt8 = 0x01
     
     /// Frame rate
-    static let fpsc: UInt8 = 0x02
+    static let frameRate: UInt8 = 0x02
     
     /// Interrupt Function
-    static let intc: UInt8 = 0x03
-    
+    static let interruptControl: UInt8 = 0x03
     
     /// Interrupt Flag, low voltage flag
-    static let stat: UInt8 = 0x04
+    static let status: UInt8 = 0x04
     
     /// Interrupt Flag Clear
-    static let sclr: UInt8 = 0x05
+    static let statusClear: UInt8 = 0x05
     
     // 0x06 reserved
     
     /// Moving Average Output
-    static let ave: UInt8 = 0x07
+    static let average: UInt8 = 0x07
     
     /// Interrupt upper value (Lower level)
-    static let inthl: UInt8 = 0x08
+    static let interruptHighLevelLow: UInt8 = 0x08
     
     /// Interrupt upper value (Upper level)
-    static let inthh: UInt8 = 0x09
+    static let interruptHighLevelHigh: UInt8 = 0x09
     
     /// Interrupt lower value (Upper level)
-    static let intll: UInt8 = 0x0A
+    static let interruptLowLevelLow: UInt8 = 0x0A
     
-    /// Interrupt lower value (Lower level)
-    static let intlh: UInt8 = 0x0B
+    /// Interrupt lower value (Upper level)
+    static let interruptLowLevelHigh: UInt8 = 0x0B
     
     /// Interrupt hysteresis value (Lower level)
-    static let ihysl: UInt8 = 0x0C
+    static let interruptHysteresisLow: UInt8 = 0x0C
     
     /// Interrupt hysteresis value (Upper level)
-    static let ihysh: UInt8 = 0x0D
+    static let interruptHysteresisHigh: UInt8 = 0x0D
     
     /// Thermistor Output Value (Lower level)
-    static let tthl: UInt8 = 0x0E
+    static let ThermistorOutputLow: UInt8 = 0x0E
     
-    /// /// Thermistor Output Value (Upper level)
-    static let tthh: UInt8 = 0x0F
+    /// Thermistor Output Value (Upper level)
+    static let ThermistorOutputHigh: UInt8 = 0x0F
     
     /// Pixel 1~8 Interrupt Result
-    static let intOffset: UInt8 = 0x10
+    static let interruptTableOffset: UInt8 = 0x10
     
     static let pixelOffset: UInt8 = 0x80
     
