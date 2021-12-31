@@ -87,9 +87,9 @@ public struct Status: OptionSet {
         self.rawValue = rawValue
     }
     
-    static let interruptFlag = Status(rawValue: 1 << 1)
-    static let pixelTemperatureFlag = Status(rawValue: 1 << 2)
-    static let thermistorTemperatureFlag = Status(rawValue: 1 << 3)
+    public static let interruptFlag = Status(rawValue: 1 << 1)
+    public static let pixelTemperatureFlag = Status(rawValue: 1 << 2)
+    public static let thermistorTemperatureFlag = Status(rawValue: 1 << 3)
 }
 
 @available(*, deprecated)
