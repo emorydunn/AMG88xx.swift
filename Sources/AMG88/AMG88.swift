@@ -34,6 +34,9 @@ public class AMG88: AMG88Protocol {
     
     }
     
+    public var status: Status {
+        Status(rawValue: interface.readByte(address, command: Registers.status))
+    }
     
     // MARK: Interrupt Mode
     /// Set high and low limits for the interrupt pin.

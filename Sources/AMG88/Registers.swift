@@ -80,6 +80,18 @@ public enum FrameRate: UInt8 {
     case fps1 = 1
 }
 
+public struct Status: OptionSet {
+    public let rawValue: UInt8
+    
+    public init(rawValue: UInt8) {
+        self.rawValue = rawValue
+    }
+    
+    static let interruptFlag = Status(rawValue: 1 << 1)
+    static let pixelTemperatureFlag = Status(rawValue: 1 << 2)
+    static let thermistorTemperatureFlag = Status(rawValue: 1 << 3)
+}
+
 @available(*, deprecated)
 public enum InterruptEnable: UInt8 {
     case enabled = 1
